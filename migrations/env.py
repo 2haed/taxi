@@ -1,7 +1,8 @@
 from logging.config import fileConfig
 
 from app.db.config import settings
-from app.db.tables import Base, Cars, Rate, Rates
+from app.db.conn import Base
+
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 

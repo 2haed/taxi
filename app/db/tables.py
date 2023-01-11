@@ -1,36 +1,27 @@
-import sqlalchemy
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-from app.db.config import settings
-import psycopg2
+from sqlalchemy import Column, ForeignKey, Integer, String, PrimaryKeyConstraint
 
-
-SQLALCHEMY_DATABASE_URL = 'postgresql+psycopg2://%s:%s@%s:%s/%s?charset=utf8' % (settings.database.user, settings.database.password, settings.database.host, settings.database.port, settings.database.database)
-Base = declarative_base(create_engine(SQLALCHEMY_DATABASE_URL))
+from app.db.conn import Base, conn
 
 
 class Cars(Base):
     __tablename__ = 'cars'
-    car_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, index=True)
-    brand = sqlalchemy.Column(sqlalchemy.String(50))
-    model = sqlalchemy.Column(sqlalchemy.String(50))
+    car_id = Column(Integer, primary_key=True, index=True)
+    brand = Column(String(50))
+    model = Column(String(50))
 
 
 class Rate(Base):
     __tablename__ = 'rate'
-    rate_id = sqlalchemy.Column(sqlalchemy.Integer, primary_key=True, index=True)
-    rate_name = sqlalchemy.Column(sqlalchemy.String(40))
+    rate_id = Column(Integer, primary_key=True, index=True)
+    rate_name = Column(String(40))
 
 
 class Rates(Base):
     __tablename__ = 'rates'
     __table_args__ = (
-        sqlalchemy.PrimaryKeyConstraint('rate_id', 'car_id'),
+        PrimaryKeyConstraint('rate_id', 'car_id'),
     )
-    rate_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('rate.rate_id', ondelete='CASCADE'),
-                                index=True)
-    car_id = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey('cars.car_id', ondelete='CASCADE'), index=True)
-    price = sqlalchemy.Column(sqlalchemy.Integer)
+    rate_id = Column(Integer, ForeignKey('rate.rate_id', ondelete='CASCADE'),
+                     index=True)
+    car_id = Column(Integer, ForeignKey('cars.car_id', ondelete='CASCADE'), index=True)
+    price = Column(Integer)

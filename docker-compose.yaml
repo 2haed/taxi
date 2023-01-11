@@ -1,0 +1,23 @@
+version: "3.10"
+
+services:
+  api:
+      image: orders_api:latest
+      ports:
+        - "8000:8000"
+      command: uvicorn --reload --host 0.0.0.0 --port 8000 orders_api.main:app
+      volumes:
+        - .:/workspace:z
+      depends_on:
+        - db
+      environment:
+        DATABASE_URL: "postgresql://postgres:password@127.0.0.1:5432/postgres"
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_DB: "postgres"
